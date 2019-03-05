@@ -43,7 +43,9 @@ def get_modified_scripts():
 
     os.chdir(retriever_root_dir)
     modified_list = []
-    version_file = requests.get("https://raw.githubusercontent.com/weecology/retriever/master/version.txt")
+    version_file = requests.get(
+        "https://raw.githubusercontent.com/weecology/retriever/master/version.txt"
+    )
     local_repo_scripts = get_script_version()  # local repo versions
 
     upstream_versions = {}
@@ -78,7 +80,7 @@ def install_modified():
         "prism-climate",
         "vertnet",
         "NPN",
-        "mammal-super-tree"
+        "mammal-super-tree",
     ]
     ignore_list = [dataset.lower() for dataset in ignore]
 
@@ -94,34 +96,29 @@ def install_modified():
     os.chdir("test_modified")
     dbfile = os.path.normpath(os.path.join(os.getcwd(), 'testdb_retriever.sqlite'))
     engine_test = {
-        "postgres": {'engine': 'postgres',
-                     'user': 'postgres',
-                     'password': os_password,
-                     'host': 'localhost',
-                     'port': 5432,
-                     'database': 'postgres',
-                     'database_name': 'testschema',
-                     'table_name': '{db}.{table}'},
-
-        "mysql": {'engine': 'mysql',
-                  'user': 'travis',
-                  'password': '',
-                  'host': 'localhost',
-                  'port': 3306,
-                  'database_name': 'testdb_retriever',
-                  'table_name': '{db}.{table}'},
-
-        "xml": {'engine': 'xml',
-                'table_name': 'output_file_{table}.xml'},
-
-        "json": {'engine': 'json',
-                 'table_name': 'output_file_{table}.json'},
-
-        "csv": {'engine': 'csv',
-                'table_name': 'output_file_{table}.csv'},
-
-        "sqlite": {'engine': 'sqlite',
-                   'file': dbfile, 'table_name': '{db}_{table}'}
+        "postgres": {
+            'engine': 'postgres',
+            'user': 'postgres',
+            'password': os_password,
+            'host': 'localhost',
+            'port': 5432,
+            'database': 'postgres',
+            'database_name': 'testschema',
+            'table_name': '{db}.{table}',
+        },
+        "mysql": {
+            'engine': 'mysql',
+            'user': 'travis',
+            'password': '',
+            'host': 'localhost',
+            'port': 3306,
+            'database_name': 'testdb_retriever',
+            'table_name': '{db}.{table}',
+        },
+        "xml": {'engine': 'xml', 'table_name': 'output_file_{table}.xml'},
+        "json": {'engine': 'json', 'table_name': 'output_file_{table}.json'},
+        "csv": {'engine': 'csv', 'table_name': 'output_file_{table}.csv'},
+        "sqlite": {'engine': 'sqlite', 'file': dbfile, 'table_name': '{db}_{table}'},
     }
 
     test_engines = {}

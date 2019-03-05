@@ -36,8 +36,9 @@ if os.name == 'nt':
 else:
     os_password = ''
 
-mysql_engine, postgres_engine, sqlite_engine, msaccess_engine, \
-csv_engine, download_engine, json_engine, xml_engine = engine_list
+mysql_engine, postgres_engine, sqlite_engine, msaccess_engine, csv_engine, download_engine, json_engine, xml_engine = (
+    engine_list
+)
 file_location = os.path.dirname(os.path.realpath(__file__))
 retriever_root_dir = os.path.abspath(os.path.join(file_location, os.pardir))
 working_script_dir = os.path.abspath(os.path.join(retriever_root_dir, "scripts"))
@@ -47,48 +48,167 @@ script_home = '{}/.retriever/scripts'.format(HOMEDIR)
 download_md5 = [
     ('mt-st-helens-veg', 'd5782e07241cb3fe9f5b2e1bb804a794'),
     ('bird-size', '45c7507ae945868c71b5179f7682ea9c'),
-    ('mammal-masses', 'b54b80d0d1959bdea0bb8a59b70fa871')
+    ('mammal-masses', 'b54b80d0d1959bdea0bb8a59b70fa871'),
 ]
 
 db_md5 = [
     ('flensburg_food_web', '89c8ae47fb419d0336b2c22219f23793'),
     ('bird_size', '98dcfdca19d729c90ee1c6db5221b775'),
-    ('mammal_masses', '6fec0fc63007a4040d9bbc5cfcd9953e')
+    ('mammal_masses', '6fec0fc63007a4040d9bbc5cfcd9953e'),
 ]
 
 # Tuple of (dataset_name, list of dict values corresponding to a table)
 fetch_tests = [
-    ('iris',
-     [{'Iris': [[5.1, 3.5, 1.4, 0.2, 'Iris-setosa'],
-                     ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'classes']]
-       }]
-     ),
-    ('flensburg-food-web',
-     [{'nodes': [
-         [2, 2, 1, 'Adult', 2.1, 'Carrion', 'Detritus', 'Detritus/Stock', 'Assemblage',
-          '', '', '', '', '', None, None, 'Low', '', None, None, None, None, None, None,
-          None, None, '', '', None, None, '', None, '', None, None, None, '', '', '',
-          None, None],
-         ['node_id', 'species_id', 'stage_id', 'stage', 'species_stageid', 'workingname',
-          'organismalgroup', 'nodetype', 'resolution', 'resolutionnotes', 'feeding',
-          'lifestylestage', 'lifestylespecies', 'consumerstrategystage', 'systems',
-          'habitataffiliation', 'mobility', 'residency', 'nativestatus',
-          'bodysize_g', 'bodysizeestimation', 'bodysizenotes', 'bodysizen',
-          'biomass_kg_ha', 'biomassestimation', 'biomassnotes', 'kingdom', 'phylum',
-          'subphylum', 'superclass', 'classes', 'subclass', 'ordered', 'suborder',
-          'infraorder', 'superfamily', 'family', 'genus', 'specific_epithet', 'subspecies',
-          'node_notes']
-     ],
-         'links': [
-             [39, 79, 39, 79, 1, 1, 14, 'Concomitant Predation on Symbionts',
-              None, None, None, None, None, None, None,
-              None],
-             ['consumernodeid', 'resourcenodeid', 'consumerspeciesid', 'resourcespeciesid',
-              'consumerstageid', 'resourcestageid', 'linknumber', 'linktype', 'linkevidence',
-              'linkevidencenotes', 'linkfrequency', 'linkn',
-              'dietfraction', 'consumptionrate', 'vectorfrom', 'preyfrom']
-         ]
-     }])
+    (
+        'iris',
+        [
+            {
+                'Iris': [
+                    [5.1, 3.5, 1.4, 0.2, 'Iris-setosa'],
+                    [
+                        'sepal_length',
+                        'sepal_width',
+                        'petal_length',
+                        'petal_width',
+                        'classes',
+                    ],
+                ]
+            }
+        ],
+    ),
+    (
+        'flensburg-food-web',
+        [
+            {
+                'nodes': [
+                    [
+                        2,
+                        2,
+                        1,
+                        'Adult',
+                        2.1,
+                        'Carrion',
+                        'Detritus',
+                        'Detritus/Stock',
+                        'Assemblage',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        None,
+                        None,
+                        'Low',
+                        '',
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        '',
+                        '',
+                        None,
+                        None,
+                        '',
+                        None,
+                        '',
+                        None,
+                        None,
+                        None,
+                        '',
+                        '',
+                        '',
+                        None,
+                        None,
+                    ],
+                    [
+                        'node_id',
+                        'species_id',
+                        'stage_id',
+                        'stage',
+                        'species_stageid',
+                        'workingname',
+                        'organismalgroup',
+                        'nodetype',
+                        'resolution',
+                        'resolutionnotes',
+                        'feeding',
+                        'lifestylestage',
+                        'lifestylespecies',
+                        'consumerstrategystage',
+                        'systems',
+                        'habitataffiliation',
+                        'mobility',
+                        'residency',
+                        'nativestatus',
+                        'bodysize_g',
+                        'bodysizeestimation',
+                        'bodysizenotes',
+                        'bodysizen',
+                        'biomass_kg_ha',
+                        'biomassestimation',
+                        'biomassnotes',
+                        'kingdom',
+                        'phylum',
+                        'subphylum',
+                        'superclass',
+                        'classes',
+                        'subclass',
+                        'ordered',
+                        'suborder',
+                        'infraorder',
+                        'superfamily',
+                        'family',
+                        'genus',
+                        'specific_epithet',
+                        'subspecies',
+                        'node_notes',
+                    ],
+                ],
+                'links': [
+                    [
+                        39,
+                        79,
+                        39,
+                        79,
+                        1,
+                        1,
+                        14,
+                        'Concomitant Predation on Symbionts',
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                    ],
+                    [
+                        'consumernodeid',
+                        'resourcenodeid',
+                        'consumerspeciesid',
+                        'resourcespeciesid',
+                        'consumerstageid',
+                        'resourcestageid',
+                        'linknumber',
+                        'linktype',
+                        'linkevidence',
+                        'linkevidencenotes',
+                        'linkfrequency',
+                        'linkn',
+                        'dietfraction',
+                        'consumptionrate',
+                        'vectorfrom',
+                        'preyfrom',
+                    ],
+                ],
+            }
+        ],
+    ),
 ]
 
 python_files = ['flensburg_food_web']
@@ -110,8 +230,7 @@ def teardown_module():
 def get_script_module(script_name):
     """Load a script module"""
     if script_name in python_files:
-        file, pathname, desc = imp.find_module(script_name,
-                                               [working_script_dir])
+        file, pathname, desc = imp.find_module(script_name, [working_script_dir])
         return imp.load_module(script_name + '.py', file, pathname, desc)
     return read_json(os.path.join(retriever_root_dir, 'scripts', script_name))
 
@@ -146,31 +265,44 @@ def test_sqlite_regression(dataset, expected, tmpdir):
         'engine': 'sqlite',
         'file': dbfile,
         'table_name': '{db}_{table}',
-        'data_dir': DATA_DIR}
+        'data_dir': DATA_DIR,
+    }
     interface_opts = {'file': dbfile, 'data_dir': retriever_root_dir}
-    assert get_csv_md5(dataset, sqlite_engine, tmpdir, install_sqlite, interface_opts) == expected
+    assert (
+        get_csv_md5(dataset, sqlite_engine, tmpdir, install_sqlite, interface_opts)
+        == expected
+    )
 
 
 @pytest.mark.parametrize("dataset, expected", db_md5)
 def test_postgres_regression(dataset, expected, tmpdir):
     """Check for postgres regression."""
-    cmd = 'psql -U postgres -d testdb_retriever -h localhost -c ' \
-          '"DROP SCHEMA IF EXISTS testschema CASCADE"'
+    cmd = (
+        'psql -U postgres -d testdb_retriever -h localhost -c '
+        '"DROP SCHEMA IF EXISTS testschema CASCADE"'
+    )
     subprocess.call(shlex.split(cmd))
-    postgres_engine.opts = {'engine': 'postgres',
-                            'user': 'postgres',
-                            'password': os_password,
-                            'host': 'localhost',
-                            'port': 5432,
-                            'database': 'testdb_retriever',
-                            'database_name': 'testschema',
-                            'table_name': '{db}.{table}'}
-    interface_opts = {"user": 'postgres',
-                      "password": postgres_engine.opts['password'],
-                      "database": postgres_engine.opts['database'],
-                      "database_name": postgres_engine.opts['database_name'],
-                      "table_name": postgres_engine.opts['table_name']}
-    assert get_csv_md5(dataset, postgres_engine, tmpdir, install_postgres, interface_opts) == expected
+    postgres_engine.opts = {
+        'engine': 'postgres',
+        'user': 'postgres',
+        'password': os_password,
+        'host': 'localhost',
+        'port': 5432,
+        'database': 'testdb_retriever',
+        'database_name': 'testschema',
+        'table_name': '{db}.{table}',
+    }
+    interface_opts = {
+        "user": 'postgres',
+        "password": postgres_engine.opts['password'],
+        "database": postgres_engine.opts['database'],
+        "database_name": postgres_engine.opts['database_name'],
+        "table_name": postgres_engine.opts['table_name'],
+    }
+    assert (
+        get_csv_md5(dataset, postgres_engine, tmpdir, install_postgres, interface_opts)
+        == expected
+    )
 
 
 @pytest.mark.parametrize("dataset, expected", db_md5)
@@ -178,17 +310,24 @@ def test_mysql_regression(dataset, expected, tmpdir):
     """Check for mysql regression."""
     cmd = 'mysql -u travis -Bse "DROP DATABASE IF EXISTS testdb_retriever"'
     subprocess.call(shlex.split(cmd))
-    mysql_engine.opts = {'engine': 'mysql',
-                         'user': 'travis',
-                         'password': '',
-                         'host': 'localhost',
-                         'port': 3306,
-                         'database_name': 'testdb_retriever',
-                         'table_name': '{db}.{table}'}
-    interface_opts = {"user": mysql_engine.opts['user'],
-                      "database_name": mysql_engine.opts['database_name'],
-                      "table_name": mysql_engine.opts['table_name']}
-    assert get_csv_md5(dataset, mysql_engine, tmpdir, install_mysql, interface_opts) == expected
+    mysql_engine.opts = {
+        'engine': 'mysql',
+        'user': 'travis',
+        'password': '',
+        'host': 'localhost',
+        'port': 3306,
+        'database_name': 'testdb_retriever',
+        'table_name': '{db}.{table}',
+    }
+    interface_opts = {
+        "user": mysql_engine.opts['user'],
+        "database_name": mysql_engine.opts['database_name'],
+        "table_name": mysql_engine.opts['table_name'],
+    }
+    assert (
+        get_csv_md5(dataset, mysql_engine, tmpdir, install_mysql, interface_opts)
+        == expected
+    )
 
 
 @pytest.mark.parametrize("dataset, expected", db_md5)
@@ -197,9 +336,13 @@ def test_xmlengine_regression(dataset, expected, tmpdir):
     xml_engine.opts = {
         'engine': 'xml',
         'table_name': '{db}_output_{table}.xml',
-        'data_dir': DATA_DIR}
+        'data_dir': DATA_DIR,
+    }
     interface_opts = {'table_name': '{db}_output_{table}.xml'}
-    assert get_csv_md5(dataset, xml_engine, tmpdir, install_xml, interface_opts) == expected
+    assert (
+        get_csv_md5(dataset, xml_engine, tmpdir, install_xml, interface_opts)
+        == expected
+    )
 
 
 @pytest.mark.parametrize("dataset, expected", db_md5)
@@ -208,9 +351,13 @@ def test_jsonengine_regression(dataset, expected, tmpdir):
     json_engine.opts = {
         'engine': 'json',
         'table_name': '{db}_output_{table}.json',
-        'data_dir': DATA_DIR}
+        'data_dir': DATA_DIR,
+    }
     interface_opts = {'table_name': '{db}_output_{table}.json'}
-    assert get_csv_md5(dataset, json_engine, tmpdir, install_json, interface_opts) == expected
+    assert (
+        get_csv_md5(dataset, json_engine, tmpdir, install_json, interface_opts)
+        == expected
+    )
 
 
 @pytest.mark.parametrize("dataset, expected", db_md5)
@@ -219,9 +366,13 @@ def test_csv_regression(dataset, expected, tmpdir):
     csv_engine.opts = {
         'engine': 'csv',
         'table_name': '{db}_output_{table}.csv',
-        'data_dir': DATA_DIR}
+        'data_dir': DATA_DIR,
+    }
     interface_opts = {'table_name': '{db}_output_{table}.csv'}
-    assert get_csv_md5(dataset, csv_engine, tmpdir, install_csv, interface_opts) == expected
+    assert (
+        get_csv_md5(dataset, csv_engine, tmpdir, install_csv, interface_opts)
+        == expected
+    )
 
 
 @pytest.mark.parametrize("dataset, expected", download_md5)

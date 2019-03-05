@@ -31,8 +31,7 @@ from retriever.lib.datapackage import clean_input, is_empty
 # Create simple engine fixture
 test_engine = Engine()
 test_engine.table = TabularDataset(**{"name": "test"})
-test_engine.script = BasicTextTemplate(
-    **{"tables": test_engine.table, "name": "test"})
+test_engine.script = BasicTextTemplate(**{"tables": test_engine.table, "name": "test"})
 test_engine.opts = {'database_name': '{db}_abc'}
 
 # Main paths
@@ -41,8 +40,9 @@ file_location = os.path.dirname(os.path.realpath(__file__))
 retriever_root_dir = os.path.abspath(os.path.join(file_location, os.pardir))
 
 # Setup paths for the raw data files used
-raw_dir_files = os.path.normpath(os.path.join(retriever_root_dir,
-                                              'raw_data/{file_name}'))
+raw_dir_files = os.path.normpath(
+    os.path.join(retriever_root_dir, 'raw_data/{file_name}')
+)
 # file: sample_zip.csv
 achive_zip = raw_dir_files.format(file_name='sample_zip.zip')
 
@@ -53,8 +53,7 @@ achive_gz = raw_dir_files.format(file_name='sample.gz')
 
 # Setup urls for downloading raw data from the test/raw_data directory
 
-achive_url = """file://{loc}/raw_data/""" \
-    .format(loc=file_location) + '{file_path}'
+achive_url = """file://{loc}/raw_data/""".format(loc=file_location) + '{file_path}'
 
 zip_url = os.path.normpath(achive_url.format(file_path='sample_zip.zip'))
 tar_url = os.path.normpath(achive_url.format(file_path='sample_tar.tar'))
@@ -94,8 +93,7 @@ def setup_functions():
 def test_auto_get_columns():
     """Basic test of getting column labels from header."""
     test_engine.table.delimiter = ","
-    columns, _ = test_engine.table.auto_get_columns(
-        ['a', 'b', 'c', 'd'])
+    columns, _ = test_engine.table.auto_get_columns(['a', 'b', 'c', 'd'])
     assert columns == [['a', None], ['b', None], ['c', None], ['d', None]]
 
 
@@ -104,34 +102,35 @@ def test_auto_get_datatypes():
 
     The function adds 100 to the auto detected length of column
     """
-    test_engine.auto_get_datatypes(None,
-                                   [["ö", 'bb', 'Löve']],
-                                   [['a', None], ['b', None], ['c', None]])
+    test_engine.auto_get_datatypes(
+        None, [["ö", 'bb', 'Löve']], [['a', None], ['b', None], ['c', None]]
+    )
     length = test_engine.table.columns
-    assert [length[0][1][1], length[1][1][1], length[2][1][1]] == \
-           [101, 102, 104]
+    assert [length[0][1][1], length[1][1][1], length[2][1][1]] == [101, 102, 104]
 
 
 def test_auto_get_columns_extra_whitespace():
     """Test getting column labels from header with extra whitespace."""
     test_engine.table.delimiter = ","
-    columns, _ = test_engine.table.auto_get_columns(
-        ['a', 'b', 'c', 'd  '])
+    columns, _ = test_engine.table.auto_get_columns(['a', 'b', 'c', 'd  '])
     assert columns == [['a', None], ['b', None], ['c', None], ['d', None]]
 
 
 def test_auto_get_columns_cleanup():
     """Test of automatically cleaning up column labels from header."""
     test_engine.table.delimiter = ","
-    columns, _ = test_engine.table.auto_get_columns([
-        'a)', 'a\nd', 'b.b', 'c/c', 'd___d', 'group'])
+    columns, _ = test_engine.table.auto_get_columns(
+        ['a)', 'a\nd', 'b.b', 'c/c', 'd___d', 'group']
+    )
 
-    assert columns == [['a', None],
-                       ['ad', None],
-                       ['b_b', None],
-                       ['c_c', None],
-                       ['d_d', None],
-                       ['grp', None]]
+    assert columns == [
+        ['a', None],
+        ['ad', None],
+        ['b_b', None],
+        ['c_c', None],
+        ['d_d', None],
+        ['grp', None],
+    ]
 
 
 def test_auto_get_delimiter_comma():
@@ -153,13 +152,11 @@ def test_auto_get_delimiter_semicolon():
 
 
 def test_correct_invalid_value_string():
-    assert \
-        correct_invalid_value('NA', {'missingValues': ['NA', '-999']}) is None
+    assert correct_invalid_value('NA', {'missingValues': ['NA', '-999']}) is None
 
 
 def test_correct_invalid_value_number():
-    assert \
-        correct_invalid_value(-999, {'missingValues': ['NA', '-999']}) is None
+    assert correct_invalid_value(-999, {'missingValues': ['NA', '-999']}) is None
 
 
 def test_correct_invalid_value_exception():
@@ -204,8 +201,10 @@ def test_dataset_names():
 
 def test_drop_statement():
     """Test the creation of drop statements."""
-    assert test_engine.drop_statement(
-        'TABLE', 'tablename') == "DROP TABLE IF EXISTS tablename"
+    assert (
+        test_engine.drop_statement('TABLE', 'tablename')
+        == "DROP TABLE IF EXISTS tablename"
+    )
 
 
 def test_download_archive_gz_known():
@@ -214,9 +213,11 @@ def test_download_archive_gz_known():
     from a gzipped file to the .retriever/data  dir"""
     setup_functions()
     files = test_engine.download_files_from_archive(
-        url=gz_url, file_names=['test/sample_tar.csv'], archive_type='gz')
+        url=gz_url, file_names=['test/sample_tar.csv'], archive_type='gz'
+    )
     r_path = os.path.normpath(
-        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv'))
+        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv')
+    )
     assert r_path == test_engine.find_file('test/sample_tar.csv')
     assert ['sample_tar.csv'] <= files
 
@@ -226,10 +227,10 @@ def test_download_archive_gz_unknown():
 
     from a gzipped file to the .retriever/data  dir"""
     setup_functions()
-    files = test_engine.download_files_from_archive(url=gz_url,
-                                                    archive_type='gz')
+    files = test_engine.download_files_from_archive(url=gz_url, archive_type='gz')
     r_path = os.path.normpath(
-        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv'))
+        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv')
+    )
     assert r_path == test_engine.find_file('test/sample_tar.csv')
     assert ['sample_tar.csv'] <= files
 
@@ -239,11 +240,12 @@ def test_download_archive_targz_known():
 
     from a targzipped file to the .retriever/data  dir"""
     setup_functions()
-    files = test_engine.download_files_from_archive(url=tar_gz_url,
-                                                    file_names=['test/sample_tar.csv'],
-                                                    archive_type='tar.gz')
+    files = test_engine.download_files_from_archive(
+        url=tar_gz_url, file_names=['test/sample_tar.csv'], archive_type='tar.gz'
+    )
     r_path = os.path.normpath(
-        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv'))
+        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv')
+    )
     assert r_path == test_engine.find_file('test/sample_tar.csv')
     assert ['sample_tar.csv'] <= files
 
@@ -253,10 +255,12 @@ def test_download_archive_targz_unknown():
 
     from a targzipped file to the .retriever/data  dir"""
     setup_functions()
-    files = test_engine.download_files_from_archive(url=tar_gz_url,
-                                                    archive_type='tar.gz')
+    files = test_engine.download_files_from_archive(
+        url=tar_gz_url, archive_type='tar.gz'
+    )
     r_path = os.path.normpath(
-        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv'))
+        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv')
+    )
     assert r_path == test_engine.find_file('test/sample_tar.csv')
     assert ['sample_tar.csv'] <= files
 
@@ -267,11 +271,11 @@ def test_download_archive_tar_known():
     from a tarred file to the .retriever/data  dir"""
     setup_functions()
     files = test_engine.download_files_from_archive(
-        url=tar_url,
-        file_names=['test/sample_tar.csv'],
-        archive_type='tar')
+        url=tar_url, file_names=['test/sample_tar.csv'], archive_type='tar'
+    )
     r_path = os.path.normpath(
-        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv'))
+        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv')
+    )
     assert r_path == test_engine.find_file('test/sample_tar.csv')
     assert ['sample_tar.csv'] <= files
 
@@ -281,10 +285,10 @@ def test_download_archive_tar_unknown():
 
     from a tarred file to the .retriever/data  dir"""
     setup_functions()
-    files = test_engine.download_files_from_archive(url=tar_url,
-                                                    archive_type='tar')
+    files = test_engine.download_files_from_archive(url=tar_url, archive_type='tar')
     r_path = os.path.normpath(
-        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv'))
+        os.path.join(HOMEDIR, '.retriever/raw_data/test/test/sample_tar.csv')
+    )
     assert r_path == test_engine.find_file('test/sample_tar.csv')
     assert ['sample_tar.csv'] <= files
 
@@ -294,11 +298,12 @@ def test_download_archive_zip_known():
 
     from a zipped file to the .retriever/data  dir"""
     setup_functions()
-    files = test_engine.download_files_from_archive(url=zip_url,
-                                                    file_names=['sample_zip.csv'],
-                                                    archive_type='zip')
+    files = test_engine.download_files_from_archive(
+        url=zip_url, file_names=['sample_zip.csv'], archive_type='zip'
+    )
     r_path = os.path.normpath(
-        os.path.join(HOMEDIR, '.retriever/raw_data/test/sample_zip.csv'))
+        os.path.join(HOMEDIR, '.retriever/raw_data/test/sample_zip.csv')
+    )
     assert r_path == test_engine.find_file('sample_zip.csv')
     assert ['sample_zip.csv'] <= files
 
@@ -308,10 +313,10 @@ def test_download_archive_zip_unkown():
 
     from a zipped file to the .retriever/data  dir"""
     setup_functions()
-    files = test_engine.download_files_from_archive(url=zip_url,
-                                                    archive_type='zip')
+    files = test_engine.download_files_from_archive(url=zip_url, archive_type='zip')
     r_path = os.path.normpath(
-        os.path.join(HOMEDIR, '.retriever/raw_data/test/sample_zip.csv'))
+        os.path.join(HOMEDIR, '.retriever/raw_data/test/sample_zip.csv')
+    )
     assert r_path == test_engine.find_file('sample_zip.csv')
     assert ['sample_zip.csv'] <= files
 
@@ -320,39 +325,39 @@ def test_extract_known_tar():
     """Test extraction of known tarred filename"""
     setup_functions()
     archivedir_write_path = raw_dir_files.format(file_name="")
-    expected = test_engine.extract_tar(achive_tar,
-                                       archivedir_write_path,
-                                       archive_type="tar",
-                                       file_name='test/sample_tar.csv')
+    expected = test_engine.extract_tar(
+        achive_tar,
+        archivedir_write_path,
+        archive_type="tar",
+        file_name='test/sample_tar.csv',
+    )
     assert ['test/sample_tar.csv'] == expected
-    assert os.path.exists(
-        raw_dir_files.format(file_name='test/sample_tar.csv'))
+    assert os.path.exists(raw_dir_files.format(file_name='test/sample_tar.csv'))
 
 
 def test_extract_unknown_tar():
     """Test extraction of unknown tarred filename"""
     setup_functions()
     archivedir_write_path = raw_dir_files.format(file_name="")
-    expected = test_engine.extract_tar(achive_tar,
-                                       archivedir_write_path,
-                                       archive_type='tar',
-                                       file_name=None)
+    expected = test_engine.extract_tar(
+        achive_tar, archivedir_write_path, archive_type='tar', file_name=None
+    )
     assert ['test/sample_tar.csv'] == expected
-    assert os.path.exists(
-        raw_dir_files.format(file_name='test/sample_tar.csv'))
+    assert os.path.exists(raw_dir_files.format(file_name='test/sample_tar.csv'))
 
 
 def test_extract_known_zip():
     """Test extraction of known zipped filename"""
     setup_functions()
     zip_known = raw_dir_files.format(file_name='zip_known')
-    expected = test_engine.extract_zip(achive_zip,
-                                       archivedir_write_path=zip_known,
-                                       file_name='sample_zip.csv')
+    expected = test_engine.extract_zip(
+        achive_zip, archivedir_write_path=zip_known, file_name='sample_zip.csv'
+    )
 
     assert ['sample_zip.csv'] == expected
-    assert os.path.exists(os.path.join(
-        raw_dir_files.format(file_name='zip_known'), 'sample_zip.csv'))
+    assert os.path.exists(
+        os.path.join(raw_dir_files.format(file_name='zip_known'), 'sample_zip.csv')
+    )
     os.system("rm -r {}".format(zip_known))
 
 
@@ -360,11 +365,11 @@ def test_extract_unknown_zip():
     """Test extraction of unknown zipped filename"""
     setup_functions()
     zip_unknown = raw_dir_files.format(file_name='zip_unknown')
-    expected = test_engine.extract_zip(achive_zip,
-                                       archivedir_write_path=zip_unknown)
+    expected = test_engine.extract_zip(achive_zip, archivedir_write_path=zip_unknown)
     assert ['sample_zip.csv'] == expected
-    assert os.path.exists(os.path.join(raw_dir_files.format(
-        file_name='zip_unknown'), 'sample_zip.csv'))
+    assert os.path.exists(
+        os.path.join(raw_dir_files.format(file_name='zip_unknown'), 'sample_zip.csv')
+    )
     os.system('rm -r {}'.format(zip_unknown))
 
 
@@ -372,59 +377,58 @@ def test_extract_unknown_targz():
     """Test extraction of unknown tarred filename"""
     setup_functions()
     archivedir_write_path = raw_dir_files.format(file_name="")
-    expected = test_engine.extract_tar(achive_tar_gz,
-                                       archivedir_write_path,
-                                       archive_type='tar.gz',
-                                       file_name=None)
+    expected = test_engine.extract_tar(
+        achive_tar_gz, archivedir_write_path, archive_type='tar.gz', file_name=None
+    )
     assert ['test/sample_tar.csv'] == expected
-    assert os.path.exists(
-        raw_dir_files.format(file_name='test/sample_tar.csv'))
+    assert os.path.exists(raw_dir_files.format(file_name='test/sample_tar.csv'))
 
 
 def test_extract_known_targz():
     """Test extraction of known tarred filename"""
     setup_functions()
     archivedir_write_path = raw_dir_files.format(file_name="")
-    expected = test_engine.extract_tar(achive_tar_gz,
-                                       archivedir_write_path,
-                                       archive_type='tar.gz',
-                                       file_name='test/sample_tar.csv')
+    expected = test_engine.extract_tar(
+        achive_tar_gz,
+        archivedir_write_path,
+        archive_type='tar.gz',
+        file_name='test/sample_tar.csv',
+    )
     assert ['test/sample_tar.csv'] == expected
-    assert os.path.exists(
-        raw_dir_files.format(file_name='test/sample_tar.csv'))
+    assert os.path.exists(raw_dir_files.format(file_name='test/sample_tar.csv'))
 
 
 def test_extract_known_gz():
     """Test extraction of known gzipped filename"""
     setup_functions()
     archivedir_write_path = raw_dir_files.format(file_name="")
-    expected = test_engine.extract_gz(achive_gz,
-                                      archivedir_write_path,
-                                      file_name='test/sample_tar.csv')
+    expected = test_engine.extract_gz(
+        achive_gz, archivedir_write_path, file_name='test/sample_tar.csv'
+    )
     assert ['test/sample_tar.csv'] == expected
-    assert os.path.exists(
-        raw_dir_files.format(file_name='test/sample_tar.csv'))
+    assert os.path.exists(raw_dir_files.format(file_name='test/sample_tar.csv'))
 
 
 def test_extract_unknown_gz():
     """Test extraction of unknown gzipped filename"""
     setup_functions()
     archivedir_write_path = raw_dir_files.format(file_name="")
-    expected = test_engine.extract_gz(achive_gz,
-                                      archivedir_write_path,
-                                      file_name=None)
-    expected = [os.path.normpath(file_name)
-                for file_name in expected]
+    expected = test_engine.extract_gz(achive_gz, archivedir_write_path, file_name=None)
+    expected = [os.path.normpath(file_name) for file_name in expected]
     assert [os.path.normpath('test/sample_tar.csv')] == expected
-    assert os.path.exists(
-        raw_dir_files.format(file_name='test/sample_tar.csv'))
+    assert os.path.exists(raw_dir_files.format(file_name='test/sample_tar.csv'))
 
 
 def test_extract_values_fixed_width():
     """Test extraction of values from line of fixed width data."""
     test_engine.table.fixed_width = [5, 2, 2, 3, 4]
     assert test_engine.extract_fixed_width('abc  1 2 3  def ') == [
-        'abc', '1', '2', '3', 'def']
+        'abc',
+        '1',
+        '2',
+        '3',
+        'def',
+    ]
 
 
 def test_find_file_absent():
@@ -442,23 +446,26 @@ def test_find_file_present():
     """
     test_engine.script.name = 'bird-size'
     assert test_engine.find_file('avian_ssd_jan07.txt') == os.path.normpath(
-        'raw_data/bird-size/avian_ssd_jan07.txt')
+        'raw_data/bird-size/avian_ssd_jan07.txt'
+    )
 
 
 def test_format_data_dir():
     """Test if directory for storing data is properly formated."""
     test_engine.script.name = "TestName"
     r_path = '.retriever/raw_data/TestName'
-    assert os.path.normpath(test_engine.format_data_dir()) == \
-           os.path.normpath(os.path.join(HOMEDIR, r_path))
+    assert os.path.normpath(test_engine.format_data_dir()) == os.path.normpath(
+        os.path.join(HOMEDIR, r_path)
+    )
 
 
 def test_format_filename():
     """Test if filenames for stored files are properly formated."""
     test_engine.script.name = "TestName"
     r_path = '.retriever/raw_data/TestName/testfile.csv'
-    assert os.path.normpath(test_engine.format_filename('testfile.csv')) == \
-           os.path.normpath(os.path.join(HOMEDIR, r_path))
+    assert os.path.normpath(
+        test_engine.format_filename('testfile.csv')
+    ) == os.path.normpath(os.path.join(HOMEDIR, r_path))
 
 
 def test_format_insert_value_int():
@@ -509,12 +516,13 @@ def test_json2csv():
 
     Creates a json file and tests the md5 sum calculation.
     """
-    json_file = create_file([
-        """[ {"User": "Alex", "Country": "US", "Age": "25"} ]"""],
-        'output.json')
+    json_file = create_file(
+        ["""[ {"User": "Alex", "Country": "US", "Age": "25"} ]"""], 'output.json'
+    )
 
-    output_json = json2csv(json_file, "output_json.csv",
-                           header_values=["User", "Country", "Age"])
+    output_json = json2csv(
+        json_file, "output_json.csv", header_values=["User", "Country", "Age"]
+    )
     obs_out = file_2list(output_json)
     os.remove(output_json)
     assert obs_out == ['User,Country,Age', 'Alex,US,25']
@@ -525,17 +533,27 @@ def test_xml2csv():
 
     Creates a xml file and tests the md5 sum calculation.
     """
-    xml_file = create_file(['<root>', '<row>',
-                            '<User>Alex</User>',
-                            '<Country>US</Country>',
-                            '<Age>25</Age>', '</row>',
-                            '<row>', '<User>Ben</User>',
-                            '<Country>US</Country>',
-                            '<Age>24</Age>',
-                            '</row>', '</root>'], 'output.xml')
+    xml_file = create_file(
+        [
+            '<root>',
+            '<row>',
+            '<User>Alex</User>',
+            '<Country>US</Country>',
+            '<Age>25</Age>',
+            '</row>',
+            '<row>',
+            '<User>Ben</User>',
+            '<Country>US</Country>',
+            '<Age>24</Age>',
+            '</row>',
+            '</root>',
+        ],
+        'output.xml',
+    )
 
-    output_xml = xml2csv(xml_file, "output_xml.csv",
-                         header_values=["User", "Country", "Age"])
+    output_xml = xml2csv(
+        xml_file, "output_xml.csv", header_values=["User", "Country", "Age"]
+    )
     obs_out = file_2list(output_xml)
     os.remove(output_xml)
     assert obs_out == ['User,Country,Age', 'Alex,US,25', 'Ben,US,24']
@@ -552,18 +570,13 @@ def test_sort_file():
 
 def test_sort_csv():
     """Test md5 sum calculation."""
-    data_file = create_file(['User,Country,Age',
-                             'Ben,US,24',
-                             'Alex,US,25',
-                             'Alex,PT,25'])
+    data_file = create_file(
+        ['User,Country,Age', 'Ben,US,24', 'Alex,US,25', 'Alex,PT,25']
+    )
     out_file = sort_csv(data_file)
     obs_out = file_2list(out_file)
     os.remove(out_file)
-    assert obs_out == [
-        'User,Country,Age',
-        'Alex,PT,25',
-        'Alex,US,25',
-        'Ben,US,24']
+    assert obs_out == ['User,Country,Age', 'Alex,PT,25', 'Alex,US,25', 'Ben,US,24']
 
 
 def test_is_empty_null_string():
@@ -653,8 +666,11 @@ def test_clean_input_not_empty_list(monkeypatch):
         return "1,    2,     3"
 
     monkeypatch.setattr('retriever.lib.datapackage.input', mock_input)
-    assert clean_input("", ignore_empty=True, split_char=',', dtype=None) == \
-           ["1", "2", "3"]
+    assert clean_input("", ignore_empty=True, split_char=',', dtype=None) == [
+        "1",
+        "2",
+        "3",
+    ]
 
 
 def test_clean_input_bool(monkeypatch):
