@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 import imp
-import numpy as np
 import os
 import shlex
 import shutil
@@ -20,14 +19,15 @@ from retriever import install_xml
 from retriever.lib.defaults import ENCODING, DATA_DIR
 from retriever.lib.load_json import read_json
 
+import pytest
+from retriever.lib.engine_tools import getmd5
+from retriever.engines import engine_list
+
 encoding = ENCODING.lower()
 
 reload(sys)
 if hasattr(sys, 'setdefaultencoding'):
     sys.setdefaultencoding(encoding)
-import pytest
-from retriever.lib.engine_tools import getmd5
-from retriever.engines import engine_list
 
 # Set postgres password, Appveyor service needs the password given
 # The Travis service obtains the password from the config file.
