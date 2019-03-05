@@ -12,17 +12,18 @@ from imp import reload
 
 from retriever.lib.defaults import ENCODING, DATA_DIR
 
-encoding = ENCODING.lower()
-
-reload(sys)
-if hasattr(sys, 'setdefaultencoding'):
-    sys.setdefaultencoding(encoding)
 import pytest
 from retriever.lib.load_json import read_json
 from retriever.lib.defaults import HOME_DIR
 from retriever.engines import engine_list
 from retriever.lib.engine_tools import file_2list
 from retriever.lib.engine_tools import create_file
+
+encoding = ENCODING.lower()
+
+reload(sys)
+if hasattr(sys, 'setdefaultencoding'):
+    sys.setdefaultencoding(encoding)
 
 # Set postgres password, Appveyor service needs the password given
 # The Travis service obtains the password from the config file.
@@ -139,7 +140,7 @@ data_no_header = {
 csv_latin1_encoding = {
     'name': 'csv_latin1_encoding',
     'raw_data': ['a,b,c',
-                 u'1,2,4Löve',
+                 u'1,2,4Lï¿½ve',
                  '4,5,6'],
     'script': {"name": "csv_latin1_encoding",
                "resources": [
@@ -157,7 +158,7 @@ csv_latin1_encoding = {
                         "http://example.com/csv_latin1_encoding.txt"
                     }
                },
-    'expect_out': [u'a,b,c', u'1,2,4Löve', u'4,5,6']
+    'expect_out': [u'a,b,c', u'1,2,4Lï¿½ve', u'4,5,6']
 }
 
 autopk_csv = {
